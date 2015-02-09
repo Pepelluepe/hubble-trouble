@@ -43,8 +43,8 @@ class LevelPhoto extends Level {
 
     void handleMouseDown(e) {
         if (this.ttl != -1) return;
-        if ((e.clientY - document.body.clientHeight * 0.75).abs() > 35) return;
-        if ((e.clientX - (document.body.clientWidth / 2 - 150 + this.sliderVal * 3)).abs() > 35) return;
+        if ((e.client.y - document.body.clientHeight * 0.75).abs() > 35) return;
+        if ((e.client.x - (document.body.clientWidth / 2 - 150 + this.sliderVal * 3)).abs() > 35) return;
 
         this.sliding = true;
     }
@@ -59,7 +59,7 @@ class LevelPhoto extends Level {
     void handleMouseMove(e) {
         if (!this.sliding) return;
         if (this.ttl != -1) return;
-        var val = (e.clientX - document.body.clientWidth / 2 + 150) / 3;
+        var val = (e.client.x - document.body.clientWidth / 2 + 150) / 3;
         if (val < 0) val = 0;
         else if (val > 100) val = 100;
         this.sliderVal = val;
