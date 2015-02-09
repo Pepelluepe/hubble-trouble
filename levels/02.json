@@ -14,7 +14,9 @@
  "orientation":"orthogonal",
  "properties":
     {
-     "goal":"Collect a new navigation computer."
+     "goal":"Collect a new navigation computer.",
+     "password":"neb",
+     "photo":"photo2"
     },
  "tileheight":16,
  "tilesets":[

@@ -2,6 +2,7 @@
 <map version="1.0" orientation="orthogonal" width="8" height="8" tilewidth="16" tileheight="16">
  <properties>
   <property name="goal" value="Use the arrow keys to collect a new lens"/>
+  <property name="photo" value="photo1"/>
  </properties>
  <tileset firstgid="1" name="hubble" tilewidth="16" tileheight="16">
   <image source="../../img/tiles.png" width="64" height="64"/>

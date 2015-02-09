@@ -45,7 +45,9 @@ fs.readdir('levels/', function(err, list) {
             width: width,
             content: getLevelData(parsed.layers[0].data),
             entities: getEntityData(parsed.layers[1]),
-            message: parsed.properties && parsed.properties.goal
+            message: parsed.properties && parsed.properties.goal,
+            photo: parsed.properties && parsed.properties.photo,
+            password: parsed.properties && parsed.properties.password,
         });
 
     });

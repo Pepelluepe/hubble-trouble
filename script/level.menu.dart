@@ -25,6 +25,7 @@ class LevelMenu extends Level {
     int duration;
 
     bool ended;
+    int jump;
     int pointerIndex = 0;
     String passwordVal = '';
 
@@ -37,6 +38,7 @@ class LevelMenu extends Level {
 
     void reset() {
         this.ended = false;
+        this.jump = 0;
 
         this.pointerIndex = 0;
 
@@ -76,17 +78,21 @@ class LevelMenu extends Level {
                 return;
             }
 
-            if (!ctx.passwordTest(this.passwordVal)) {
+            var level = ctx.passwordTest(this.passwordVal);
+            if (level == -1) {
                 sound.play('bad_choice');
                 return;
             }
 
             sound.play('select');
+            this.jump = level;
+            this.ended = true;
         }
 
     }
 
     void handleKey(e) {
+        if (this.pointerIndex == 0) return;
         if (e.keyCode == keys.BACKSPACE) {
             e.preventDefault();
             if (this.passwordVal.length == 0) {
@@ -179,7 +185,11 @@ class LevelMenu extends Level {
 
     void tick(int delta) {
         if (this.ended) {
-            this.ctx.nextLevel();
+            if (this.jump != 0) {
+                this.ctx.goto(this.jump);
+            } else {
+                this.ctx.nextLevel();
+            }
         }
     }
 

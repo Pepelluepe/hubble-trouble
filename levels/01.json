@@ -14,7 +14,8 @@
  "orientation":"orthogonal",
  "properties":
     {
-     "goal":"Use the arrow keys to collect a new lens"
+     "goal":"Use the arrow keys to collect a new lens",
+     "photo":"photo1"
     },
  "tileheight":16,
  "tilesets":[

@@ -27,10 +27,12 @@ abstract class Level {
 
 }
 
-typedef bool passwordTestFunc(String x);
+typedef int passwordTestFunc(String x);
 typedef void nextLevelFunc();
+typedef void gotoFunc(int level);
 class Context {
     final passwordTestFunc passwordTest;
     final nextLevelFunc nextLevel;
-    Context(this.passwordTest, this.nextLevel);
+    final gotoFunc goto;
+    Context(this.passwordTest, this.nextLevel, this.goto);
 }

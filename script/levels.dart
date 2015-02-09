@@ -11,14 +11,6 @@ import 'leveldata.dart';
 
 
 List<Level> levels = [];
-List<String> passwords = [
-    null,
-    'neb',
-];
-List<String> photos = [
-    'photo1',
-    'photo2',
-];
 var DISABILITY_LEVEL = -1;
 var CURRENT_LEVEL = 0;
 
@@ -27,30 +19,36 @@ Map passMap = {};
 void addLevel(String passWord, Level level) {
     levels.add(level);
     if (passWord != null) {
-        passMap[passWord] = level;
+        passMap[passWord] = levels.length - 1;
     }
 }
 
-bool passwordTest(String passWord) {
-    return passMap.containsKey(passWord);
+int passwordTest(String passWord) {
+    return passMap.containsKey(passWord) ? passMap[passWord] : -1;
 }
 
 
 void init() {
 
-    var ctx = new Context(passwordTest, next);
+    var ctx = new Context(passwordTest, next, goTo);
 
     addLevel(null, new LevelTitle(ctx, 750, soundName: 'bastacorp'));
     addLevel(null, new LevelMenu(ctx));
 
     var i = 0;
     LEVELS.forEach((level) {
-        if (level.containsKey('message')) addLevel(passwords[i], new LevelMessage(ctx, 2000, level['message']));
-        addLevel(!level.containsKey('message') ? passwords[i] : null, new LevelSlidePuzzle(ctx, i % 4, level['width'], level['height'], level['content']));
+        var password = level.containsKey('password') ? level['password'] : null;
+
+        if (level.containsKey('message')) {
+            addLevel(password, new LevelMessage(ctx, 2000, level['message']));
+            password = null;
+        }
+
+        addLevel(password, new LevelSlidePuzzle(ctx, i % 4, level['width'], level['height'], level['content']));
         addLevel(null, new LevelMessage(ctx, 2000, 'Photo Op!'));
-        addLevel(null, new LevelPhoto(ctx, photos[i]));
-        if (i + 1 != passwords.length && passwords[i + 1] != null) {
-            addLevel(null, new LevelMessage(ctx, 2000, 'PASSWORD: ' + passwords[i + 1]));
+        addLevel(null, new LevelPhoto(ctx, level['photo']));
+        if (i + 1 != LEVELS.length && LEVELS[i + 1].containsKey('password')) {
+            addLevel(null, new LevelMessage(ctx, 2000, 'PASSWORD: ' + LEVELS[i + 1]['password']));
         }
         i += 1;
     });
