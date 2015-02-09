@@ -2,7 +2,7 @@ library levels.title;
 
 import 'dart:html';
 
-import 'images.dart' as images;
+import 'keys.dart' as keys;
 import 'level.generic.dart';
 import 'sound.dart' as sound;
 
@@ -11,7 +11,6 @@ class LevelMessage extends Level {
 
     Context ctx;
 
-    images.Drawable image;
     int duration;
     String message;
 
@@ -25,6 +24,16 @@ class LevelMessage extends Level {
 
     void reset() {
         this.ttl = this.duration;
+
+        keys.up.one('any', this.handleAny);
+    }
+
+    void handleAny(e) {
+        this.ttl = 0;
+    }
+
+    void cleanUp() {
+        keys.up.off('any', this.handleAny);
     }
 
     void draw(CanvasRenderingContext2D ctx, Function drawUI) {
@@ -32,11 +41,11 @@ class LevelMessage extends Level {
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         ctx.fillStyle = '#fff';
-        ctx.font = '50px VT323';
+        ctx.font = '40px VT323';
         ctx.fillText(
             this.message,
-            canvas.width / 2 - ctx.measureText(this.message).width / 2,
-            canvas.height / 2 - 25
+            ctx.canvas.width / 2 - ctx.measureText(this.message).width / 2,
+            ctx.canvas.height / 2 - 20
         );
     }
 

@@ -7,6 +7,7 @@ Another fine entertainment franchise by BastaCorp.
 
 - NASA for inventing outer space and stuff
 - [Egon Elbre](https://github.com/egonelbre) for JSFX
+- [Mario Klingemann](http://www.quasimondo.com/StackBlurForCanvas) for StackBlur
 
 
 ## License
@@ -14,4 +15,4 @@ Another fine entertainment franchise by BastaCorp.
 Made by @mattbasta with [CC0](http://creativecommons.org/publicdomain/zero/1.0/).
 
 - All game assets are in the public domain or CC0.
-- JSFX and Buzz.js: MIT license
+- JSFX, StackBlur, and Buzz.js: MIT license

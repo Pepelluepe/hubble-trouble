@@ -4,6 +4,7 @@ import 'audio.dart' as audio;
 import 'level.generic.dart';
 import 'level.message.dart';
 import 'level.menu.dart';
+import 'level.photo.dart';
 import 'level.slidePuzzle.dart';
 import 'level.title.dart';
 import 'leveldata.dart';
@@ -12,9 +13,11 @@ import 'leveldata.dart';
 List<Level> levels = [];
 List<String> passwords = [
     null,
-    null,
-    null,
-    'phot',
+    'neb',
+];
+List<String> photos = [
+    'photo1',
+    'photo2',
 ];
 var DISABILITY_LEVEL = -1;
 var CURRENT_LEVEL = 0;
@@ -42,8 +45,13 @@ void init() {
 
     var i = 0;
     LEVELS.forEach((level) {
-        if (level['message']) addLevel(passwords[i], new LevelMessage(ctx, 1250, level['message']));
-        addLevel(!level['message'] ? passwords[i] : null, new LevelSlidePuzzle(ctx, i % 4, level['width'], level['height'], level['content']));
+        if (level.containsKey('message')) addLevel(passwords[i], new LevelMessage(ctx, 2000, level['message']));
+        addLevel(!level.containsKey('message') ? passwords[i] : null, new LevelSlidePuzzle(ctx, i % 4, level['width'], level['height'], level['content']));
+        addLevel(null, new LevelMessage(ctx, 2000, 'Photo Op!'));
+        addLevel(null, new LevelPhoto(ctx, photos[i]));
+        if (i + 1 != passwords.length && passwords[i + 1] != null) {
+            addLevel(null, new LevelMessage(ctx, 2000, 'PASSWORD: ' + passwords[i + 1]));
+        }
         i += 1;
     });
 

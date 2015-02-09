@@ -283,7 +283,7 @@ class LevelSlidePuzzle extends Level {
 
                 if (playerX == endX && playerY == endY) {
                     sound.play('select');
-                    this.won = 2500;
+                    this.won = 500;
                     return;
                 }
 
