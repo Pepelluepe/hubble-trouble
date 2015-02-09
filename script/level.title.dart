@@ -9,13 +9,16 @@ import 'sound.dart' as sound;
 
 class LevelTitle extends Level {
 
+    Context ctx;
+
     images.Drawable image;
     int duration;
     String soundName;
 
     int ttl;
 
-    LevelTitle(int duration, {String soundName: null}) {
+    LevelTitle(Context ctx, int duration, {String soundName: null}) {
+        this.ctx = ctx;
         this.image = images.get('bastacorp');
         this.duration = duration;
         this.soundName = soundName;
@@ -47,10 +50,10 @@ class LevelTitle extends Level {
         });
     }
 
-    void tick(int delta, Function nextLevel) {
+    void tick(int delta) {
         this.ttl -= delta;
         if (this.ttl <= 0) {
-            nextLevel();
+            this.ctx.nextLevel();
         }
     }
 

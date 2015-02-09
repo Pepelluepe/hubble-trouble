@@ -15,8 +15,9 @@ abstract class Level {
     void draw(CanvasRenderingContext2D ctx, Function drawUI);
 
     void reset();
+    void cleanUp() {}
 
-    void tick(int delta, Function nextLevel);
+    void tick(int delta);
 
     int getLevelIndex(int x, int y) {
         return 0;
@@ -24,4 +25,12 @@ abstract class Level {
 
     bool canPause() => false;
 
+}
+
+typedef bool passwordTestFunc(String x);
+typedef void nextLevelFunc();
+class Context {
+    final passwordTestFunc passwordTest;
+    final nextLevelFunc nextLevel;
+    Context(this.passwordTest, this.nextLevel);
 }

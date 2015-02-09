@@ -16,7 +16,7 @@ void _loop(num ts) {
     var delta = now - previous;
 
     if (!paused) {
-        levels.getCurrent().tick(delta, levels.next);
+        levels.getCurrent().tick(delta);
         drawing.draw();
     }
 
