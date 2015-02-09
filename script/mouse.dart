@@ -1,11 +1,11 @@
-library keys;
+library mouse;
 
 import 'dart:async';
 import 'dart:html';
 
-import 'events.dart';
+import 'events.dart' as eventsLib;
 
-var events = new EventTarget();
+var events = new eventsLib.EventTarget();
 
 
 void init() {

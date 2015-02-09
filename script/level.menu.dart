@@ -39,8 +39,8 @@ class LevelMenu extends Level {
     void reset() {
         this.ended = false;
         this.jump = 0;
-
         this.pointerIndex = 0;
+        this.passwordVal = '';
 
         keys.up.on(40, this.handleDown); // Down
         keys.up.on(38, this.handleUp); // Up

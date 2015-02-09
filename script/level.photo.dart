@@ -1,4 +1,4 @@
-library levels.title;
+library levels.photo;
 
 import 'dart:html';
 

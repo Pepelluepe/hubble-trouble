@@ -1,4 +1,4 @@
-library levels.title;
+library levels.message;
 
 import 'dart:html';
 

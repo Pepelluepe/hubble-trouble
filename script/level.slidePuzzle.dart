@@ -1,4 +1,4 @@
-library levels.menu;
+library levels.slidePuzzle;
 
 import 'dart:html';
 import 'dart:typed_data';
@@ -121,11 +121,11 @@ class LevelSlidePuzzle extends Level {
     void reset() {
         this.won = 0;
 
-        this.playerX = this.startX;
-        this.playerY = this.startY;
+        this.playerX = this.startX.toDouble();
+        this.playerY = this.startY.toDouble();
         this.playerSliding = false;
-        this.playerVelX = 0;
-        this.playerVelY = 0;
+        this.playerVelX = 0.0;
+        this.playerVelY = 0.0;
         this.playerDirX = 0;
         this.playerDirY = 0;
 
@@ -138,7 +138,7 @@ class LevelSlidePuzzle extends Level {
     }
 
     void handleKey(e) {
-        if (playerSliding) return false;
+        if (playerSliding) return;
         switch (e.keyCode) {
             case 37: // Left
                 doSlide(-1, 0);
@@ -275,10 +275,10 @@ class LevelSlidePuzzle extends Level {
             if (!playerCanMove(playerDirX, playerDirY)) {
                 playerDirX = 0;
                 playerDirY = 0;
-                playerVelX = 0;
-                playerVelY = 0;
-                playerX = playerX.round();
-                playerY = playerY.round();
+                playerVelX = 0.0;
+                playerVelY = 0.0;
+                playerX = playerX.roundToDouble();
+                playerY = playerY.roundToDouble();
                 playerSliding = false;
 
                 if (playerX == endX && playerY == endY) {

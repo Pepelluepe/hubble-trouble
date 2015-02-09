@@ -1,16 +1,12 @@
 library levels.generic;
 
 import 'dart:html';
-import 'dart:typed_data';
 
 
 abstract class Level {
 
     int height;
     int width;
-
-    CanvasRenderingContext2D ctx;
-    Uint16List data;
 
     void draw(CanvasRenderingContext2D ctx, Function drawUI);
 
