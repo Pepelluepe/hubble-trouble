@@ -609,11 +609,13 @@ var $$ = Object.create(null);
   },
   JSInt: {
     "^": "JSNumber;",
+    $is$double: true,
     $isnum: true,
     $is$int: true
   },
   JSDouble: {
     "^": "JSNumber;",
+    $is$double: true,
     $isnum: true
   },
   JSString: {
@@ -675,6 +677,15 @@ var $$ = Object.create(null);
         s += s;
       }
       return result;
+    },
+    padRight$2: function(receiver, width, padding) {
+      var delta = width - receiver.length;
+      if (delta <= 0)
+        return receiver;
+      return receiver + this.$mul(padding, delta);
+    },
+    padRight$1: function($receiver, width) {
+      return this.padRight$2($receiver, width, " ");
     },
     get$isEmpty: function(receiver) {
       return receiver.length === 0;
@@ -3052,6 +3063,12 @@ var $$ = Object.create(null);
             return $name;
         }
       }}
+  },
+  FallThroughErrorImplementation: {
+    "^": "FallThroughError;",
+    toString$0: function(_) {
+      return "Switch case fall-through.";
+    }
   },
   RuntimeError: {
     "^": "Error;message",
@@ -6649,7 +6666,8 @@ var $$ = Object.create(null);
       }}
   },
   $double: {
-    "^": "num;"
+    "^": "num;",
+    $is$double: true
   },
   "+double": 0,
   Duration: {
@@ -6787,7 +6805,9 @@ var $$ = Object.create(null);
       }
       return "RangeError: " + H.S(this.message) + " (" + H.S(value) + ")" + explanation;
     },
-    static: {RangeError$value: function(value, $name, message) {
+    static: {RangeError$: function(message) {
+        return new P.RangeError(null, null, false, null, null, message);
+      }, RangeError$value: function(value, $name, message) {
         return new P.RangeError(null, null, true, value, $name, "Value not in range");
       }, RangeError$range: function(invalidValue, start, end, $name, message) {
         return new P.RangeError(start, end, true, invalidValue, $name, "Invalid value");
@@ -6809,6 +6829,9 @@ var $$ = Object.create(null);
         var t1 = J.get$length$asx(indexable);
         return new P.IndexError(indexable, t1, true, invalidValue, $name, "Index out of range");
       }}
+  },
+  FallThroughError: {
+    "^": "Error;"
   },
   NoSuchMethodError: {
     "^": "Error;_core$_receiver,_memberName,_core$_arguments,_namedArguments,_existingArgumentNames",
@@ -7920,6 +7943,33 @@ var $$ = Object.create(null);
     hash ^= hash >>> 11;
     return 536870911 & hash + ((16383 & hash) << 15 >>> 0);
   },
+  min: function(a, b) {
+    if (typeof a !== "number")
+      throw H.wrapException(P.ArgumentError$(a));
+    if (typeof b !== "number")
+      throw H.wrapException(P.ArgumentError$(b));
+    if (a > b)
+      return b;
+    if (a < b)
+      return a;
+    if (typeof b === "number") {
+      if (typeof a === "number")
+        if (a === 0)
+          return (a + b) * a * b;
+      if (a === 0 && C.JSInt_methods.get$isNegative(b) || isNaN(b))
+        return b;
+      return a;
+    }
+    return a;
+  },
+  _JSRandom: {
+    "^": "Object;",
+    nextInt$1: function(max) {
+      if (max <= 0 || max > 4294967296)
+        throw H.wrapException(P.RangeError$("max must be in range 0 < max \u2264 2^32, was " + max));
+      return Math.random() * max >>> 0;
+    }
+  },
   Point: {
     "^": "Object;x>,y>",
     toString$0: function(_) {
@@ -8873,7 +8923,25 @@ var $$ = Object.create(null);
     t2.LevelMenu$1(ctx);
     V.addLevel(null, t2);
     t1.i_0 = 0;
-    C.JSArray_methods.forEach$1($.get$LEVELS(), new V.init_closure(t1, ctx));
+    C.JSArray_methods.forEach$1($.get$SLIDING_LEVELS(), new V.init_closure(t1, ctx));
+    t1 = new Z.LevelMessage(null, null, null, null, null, null);
+    t1.ctx = ctx;
+    t1.duration = 2500;
+    t1.message = "Hubble Wife is in bed with another man!";
+    V.addLevel(null, t1);
+    t1 = new B.LevelManbattle(null, null, null, null, null, null, null, null, null, null, null, null);
+    t1.LevelManbattle$1(ctx);
+    V.addLevel("xh1", t1);
+    t1 = new Z.LevelMessage(null, null, null, null, null, null);
+    t1.ctx = ctx;
+    t1.duration = 2500;
+    t1.message = "PASSWORD: ups";
+    V.addLevel(null, t1);
+    t1 = new Z.LevelMessage(null, null, null, null, null, null);
+    t1.ctx = ctx;
+    t1.duration = 2500;
+    t1.message = "You need some fresh air";
+    V.addLevel("ups", t1);
     t1 = $.get$levels();
     if (0 >= t1.length)
       return H.ioore(t1, 0);
@@ -8928,18 +8996,18 @@ var $$ = Object.create(null);
       t4.LevelPhoto$2(t1, t3.$index(level, "photo"));
       V.addLevel(null, t4);
       t3 = t2.i_0;
-      t4 = $.get$LEVELS();
-      if (t3 + 1 !== 3) {
+      t4 = $.get$SLIDING_LEVELS();
+      if (t3 + 1 !== 4) {
         ++t3;
-        if (t3 >= 3)
+        if (t3 >= 4)
           return H.ioore(t4, t3);
         t3 = t4[t3].containsKey$1("password");
       } else
         t3 = false;
       if (t3) {
-        t3 = $.get$LEVELS();
+        t3 = $.get$SLIDING_LEVELS();
         t4 = t2.i_0 + 1;
-        if (t4 >= 3)
+        if (t4 >= 4)
           return H.ioore(t3, t4);
         t4 = C.JSString_methods.$add("PASSWORD: ", t3[t4].$index(0, "password"));
         t3 = new Z.LevelMessage(null, null, null, null, null, null);
@@ -8969,6 +9037,351 @@ var $$ = Object.create(null);
     },
     goto$1: function(arg0) {
       return this.$goto.call$1(arg0);
+    }
+  }
+}],
+["levels.manbattle", "script/level.manbattle.dart", , B, {
+  "^": "",
+  LevelManbattle: {
+    "^": "Level;ctx,player,upsGuy,ended,countdown,opponentHP,stage,selectedMove,message1,message2,height,width",
+    reset$0: function(_) {
+      this.ended = false;
+      this.countdown = 1500;
+      this.opponentHP = 100;
+      this.stage = 0;
+      this.selectedMove = 0;
+      this.message1 = "DELIVERY GUY appears";
+      this.message2 = "";
+      $.get$up().on$2(0, "any", this.get$handleKey());
+    },
+    cleanUp$0: function() {
+      $.get$up().off$2("any", this.get$handleKey());
+    },
+    draw$2: function(ctx, drawUI) {
+      var t1, canvas, squareSize, t2, t3, squareX, squareY, fontSize, openingDriftOpponent, openingDriftPlayer, t4, t5, t6, t7, t8, t9, t10;
+      t1 = J.getInterceptor$x(ctx);
+      canvas = t1.get$canvas(ctx);
+      squareSize = P.min(canvas.width, canvas.height);
+      t2 = canvas.width;
+      if (typeof t2 !== "number")
+        return t2.$div();
+      t3 = squareSize / 2;
+      squareX = t2 / 2 - t3;
+      t2 = canvas.height;
+      if (typeof t2 !== "number")
+        return t2.$div();
+      squareY = t2 / 2 - t3;
+      t3 = squareSize * 0.05;
+      fontSize = C.JSNumber_methods.toInt$0(C.JSNumber_methods.roundToDouble$0(t3));
+      t1.set$font(ctx, C.JSInt_methods.toString$0(fontSize) + "px VT323");
+      t1.set$fillStyle(ctx, "#eee");
+      t1.fillRect$4(ctx, 0, 0, canvas.width, canvas.height);
+      t2 = this.stage;
+      if (t2 === 0) {
+        openingDriftOpponent = this.countdown;
+        openingDriftPlayer = openingDriftOpponent;
+      } else {
+        if (t2 === 7) {
+          t2 = this.countdown;
+          if (typeof t2 !== "number")
+            return t2.$sub();
+          openingDriftOpponent = t2 - 2000;
+        } else
+          openingDriftOpponent = 0;
+        openingDriftPlayer = 0;
+      }
+      if (typeof openingDriftPlayer !== "number")
+        return openingDriftPlayer.$div();
+      t2 = C.JSNumber_methods.roundToDouble$0(openingDriftPlayer / 1500 * 20);
+      if (typeof openingDriftOpponent !== "number")
+        return openingDriftOpponent.$div();
+      t4 = C.JSNumber_methods.roundToDouble$0(openingDriftOpponent / 1500 * 20);
+      t5 = this.upsGuy.fetched;
+      if (t5 != null)
+        new B.LevelManbattle_draw_closure(ctx, squareSize, squareX, squareY, 0.7 * squareSize - t4 / 20 * squareSize).call$1(t5);
+      t4 = this.player.fetched;
+      if (t4 != null)
+        new B.LevelManbattle_draw_closure0(ctx, squareSize, squareX, squareY, 0.1 * squareSize + t2 / 20 * squareSize).call$1(t4);
+      t1.set$fillStyle(ctx, "#111");
+      t2 = squareX + t3;
+      t3 = squareY + t3;
+      t4 = squareSize * 0.4;
+      t5 = squareSize * 0.1;
+      t1.fillRect$4(ctx, t2, t3, t4, t5);
+      t1.set$fillStyle(ctx, "#eee");
+      t6 = t2 + 4;
+      t7 = t4 - 4;
+      t8 = t5 - 4;
+      t1.fillRect$4(ctx, t6, t3, t7, t8);
+      t1.set$fillStyle(ctx, "#111");
+      t9 = squareX + squareSize * 0.075;
+      t1.fillText$3(ctx, "DELIVERY GUY", t9, t3 + fontSize);
+      t3 = this.opponentHP;
+      if (typeof t3 !== "number")
+        return t3.$mul();
+      t1.fillRect$4(ctx, t9, squareY + squareSize * 0.065 + fontSize, t3 * squareSize / 100 * 0.35, 5);
+      t1.set$fillStyle(ctx, "#111");
+      t3 = squareX + squareSize * 0.55;
+      t10 = squareY + squareSize * 0.6;
+      t1.fillRect$4(ctx, t3, t10, t4, t5);
+      t1.set$fillStyle(ctx, "#eee");
+      t1.fillRect$4(ctx, t3 + 4, t10, t7, t8);
+      t1.set$fillStyle(ctx, "#111");
+      t8 = squareX + squareSize * 0.575;
+      t1.fillText$3(ctx, "HUBBLE TLSCP", t8, t10 + fontSize);
+      t1.fillRect$4(ctx, t8, squareY + squareSize * 0.615 + fontSize, squareSize * 0.35, 5);
+      t1.set$fillStyle(ctx, "#111");
+      t8 = squareY + squareSize * 0.75;
+      t10 = squareSize * 0.9;
+      t7 = squareSize * 0.2;
+      t1.fillRect$4(ctx, t2, t8, t10, t7);
+      t1.set$fillStyle(ctx, "#eee");
+      t1.fillRect$4(ctx, t6, t8 + 4, t10 - 8, t7 - 8);
+      t1.set$fillStyle(ctx, "#111");
+      t7 = squareY + squareSize * 0.8;
+      t1.fillText$3(ctx, this.message1, t9, t7);
+      t1.fillText$3(ctx, this.message2, t9, t7 + fontSize + 3);
+      t1.set$fillStyle(ctx, "#111");
+      if (squareX > 0) {
+        t1.fillRect$4(ctx, 0, 0, squareX, canvas.height);
+        t2 = canvas.width;
+        if (typeof t2 !== "number")
+          return t2.$sub();
+        t1.fillRect$4(ctx, squareX + squareSize, 0, t2 - squareX - squareSize, canvas.height);
+      }
+      if (squareY > 0) {
+        t1.fillRect$4(ctx, 0, 0, canvas.width, squareY);
+        t2 = canvas.width;
+        t3 = canvas.height;
+        if (typeof t3 !== "number")
+          return t3.$sub();
+        t1.fillRect$4(ctx, 0, squareY + squareSize, t2, t3 - squareY - squareSize);
+      }
+    },
+    tickCountDown$1: function(delta) {
+      var t1 = this.countdown;
+      if (t1 === 0)
+        return true;
+      if (typeof t1 !== "number")
+        return t1.$sub();
+      t1 -= delta;
+      this.countdown = t1;
+      if (t1 <= 0) {
+        this.countdown = 0;
+        return true;
+      }
+      return false;
+    },
+    setStage$1: function(stage) {
+      var t1, t2;
+      this.stage = stage;
+      switch (stage) {
+        case 1:
+          this.countdown = 2000;
+          $._jsfxInst.callMethod$2("playSample", [$.get$samples().$index(0, "bad_choice")]);
+          t1 = $.get$INSULTING_MOVES();
+          t2 = $.get$rng().nextInt$1(3);
+          if (t2 < 0 || t2 >= 3)
+            return H.ioore(t1, t2);
+          this.message1 = "DELIVERY GUY uses " + t1[t2];
+          this.message2 = "";
+          break;
+        case 2:
+          this.countdown = 2000;
+          $._jsfxInst.callMethod$2("playSample", [$.get$samples().$index(0, "hubble_wife")]);
+          this.message1 = "HUBBLE WIFE is very pleased!";
+          this.message2 = "";
+          break;
+        case 3:
+          this.countdown = 2000;
+          $._jsfxInst.callMethod$2("playSample", [$.get$samples().$index(0, "rage")]);
+          this.message1 = "YOU are ENRAGED!";
+          this.message2 = "";
+          break;
+        case 4:
+          this.selectedMove = 0;
+          this.battleMenu$0();
+          break;
+        case 5:
+          this.countdown = 2000;
+          $._jsfxInst.callMethod$2("playSample", [$.get$samples().$index(0, "select")]);
+          this.message1 = "It is super effective!";
+          this.message2 = "";
+          break;
+        case 6:
+          this.countdown = 2000;
+          this.message1 = "It has no effect";
+          this.message2 = "because you are a telescope";
+          break;
+        case 7:
+          this.countdown = 2000;
+          this.message1 = "DELIVERY GUY has passed out!";
+          this.message2 = "";
+          break;
+      }
+    },
+    battleMenu$0: function() {
+      var t1, t2, t3, line1, line2;
+      t1 = this.selectedMove;
+      t2 = t1 === 0 ? "> " : "  ";
+      t3 = $.get$MOVES();
+      line1 = t2 + t3[0];
+      t1 = t1 === 1 ? "> " : "  ";
+      line2 = t1 + t3[1];
+      line1 = C.JSString_methods.padRight$1(line1, 8);
+      line2 = C.JSString_methods.padRight$1(line2, 8);
+      t1 = this.selectedMove;
+      t2 = t1 === 2 ? "> " : "  ";
+      t3 = $.get$MOVES();
+      line1 += t2 + t3[2];
+      t1 = t1 === 3 ? "> " : "  ";
+      line2 += t1 + t3[3];
+      this.message1 = line1;
+      this.message2 = line2;
+    },
+    handleKey$1: [function(e) {
+      var t1;
+      switch (this.stage) {
+        case 0:
+        case 1:
+        case 7:
+          if (J.get$keyCode$x(e) === 13) {
+            t1 = this.stage;
+            if (typeof t1 !== "number")
+              return t1.$add();
+            this.setStage$1(t1 + 1);
+            return;
+          }
+          break;
+        case 2:
+          if (J.get$keyCode$x(e) === 13) {
+            this.setStage$1(4);
+            return;
+          }
+          throw H.wrapException(new H.FallThroughErrorImplementation());
+        case 6:
+          if (J.get$keyCode$x(e) === 13) {
+            this.setStage$1(1);
+            return;
+          }
+          break;
+      }
+      if (this.stage !== 4)
+        return;
+      t1 = J.getInterceptor$x(e);
+      if (t1.get$keyCode(e) === 13) {
+        switch (this.selectedMove) {
+          case 1:
+            $._jsfxInst.callMethod$2("playSample", [$.get$samples().$index(0, "select")]);
+            this.setStage$1(5);
+            break;
+          case 0:
+          case 2:
+          case 3:
+            $._jsfxInst.callMethod$2("playSample", [$.get$samples().$index(0, "bad_choice")]);
+            this.setStage$1(6);
+            break;
+        }
+        return;
+      }
+      if (t1.get$keyCode(e) === 40) {
+        t1 = this.selectedMove;
+        if (typeof t1 !== "number")
+          return t1.$add();
+        ++t1;
+        this.selectedMove = t1;
+      } else if (t1.get$keyCode(e) === 38) {
+        t1 = this.selectedMove;
+        if (typeof t1 !== "number")
+          return t1.$sub();
+        --t1;
+        this.selectedMove = t1;
+      } else if (t1.get$keyCode(e) === 37) {
+        t1 = this.selectedMove;
+        if (typeof t1 !== "number")
+          return t1.$sub();
+        t1 -= 2;
+        this.selectedMove = t1;
+      } else if (t1.get$keyCode(e) === 39) {
+        t1 = this.selectedMove;
+        if (typeof t1 !== "number")
+          return t1.$add();
+        t1 += 2;
+        this.selectedMove = t1;
+      } else
+        return;
+      if (t1 < 0)
+        this.selectedMove = t1 + 4;
+      else if (t1 > 3)
+        this.selectedMove = t1 - 4;
+      this.battleMenu$0();
+      $._jsfxInst.callMethod$2("playSample", [$.get$samples().$index(0, "menu_down")]);
+    }, "call$1", "get$handleKey", 2, 0, 12, 2],
+    tick$1: function(delta) {
+      var t1;
+      switch (this.stage) {
+        case 0:
+        case 1:
+          if (this.tickCountDown$1(delta)) {
+            t1 = this.stage;
+            if (typeof t1 !== "number")
+              return t1.$add();
+            this.setStage$1(t1 + 1);
+          }
+          break;
+        case 2:
+          if (this.tickCountDown$1(delta))
+            this.setStage$1(4);
+          break;
+        case 3:
+        case 4:
+          break;
+        case 5:
+          t1 = this.opponentHP;
+          if (typeof t1 !== "number")
+            return t1.$gt();
+          if (t1 > 0) {
+            t1 -= C.JSNumber_methods.toInt$0(C.JSNumber_methods.roundToDouble$0(delta * 0.05));
+            this.opponentHP = t1;
+            if (t1 <= 0) {
+              this.opponentHP = 0;
+              this.setStage$1(7);
+            }
+          }
+          break;
+        case 6:
+          if (this.tickCountDown$1(delta))
+            this.setStage$1(1);
+          break;
+        case 7:
+          if (this.tickCountDown$1(delta))
+            this.ctx.nextLevel$0();
+          break;
+      }
+    },
+    LevelManbattle$1: function(ctx) {
+      this.ctx = ctx;
+      this.player = S.Drawable$("player");
+      this.upsGuy = S.Drawable$("upsGuy");
+    }
+  },
+  LevelManbattle_draw_closure: {
+    "^": "Closure:28;ctx_0,squareSize_1,squareX_2,squareY_3,opponentLeft_4",
+    call$1: function(img) {
+      var t1, t2, t3;
+      t1 = J.getInterceptor$x(img);
+      t2 = this.squareSize_1;
+      t3 = t2 * 0.25;
+      J.drawImageScaledFromSource$9$x(this.ctx_0, img, 0, 0, t1.get$width(img), t1.get$height(img), this.opponentLeft_4 + this.squareX_2, this.squareY_3 + 0.05 * t2, t3, t3);
+    }
+  },
+  LevelManbattle_draw_closure0: {
+    "^": "Closure:28;ctx_5,squareSize_6,squareX_7,squareY_8,playerLeft_9",
+    call$1: function(img) {
+      var t1, t2;
+      t1 = this.squareSize_6;
+      t2 = t1 * 0.45;
+      J.drawImageScaledFromSource$9$x(this.ctx_5, img, 0, 0, 16, 16, this.playerLeft_9 + this.squareX_7, this.squareY_8 + t1 - t1 * 0.5, t2, t2);
     }
   }
 }],
@@ -9882,8 +10295,8 @@ var $$ = Object.create(null);
     call$1: function(img) {
       var t1, hw, hh, t2, t3, t4, t5, t6, t7;
       t1 = J.getInterceptor$x(img);
-      hw = J.$div$n(t1.get$width(img), 4);
-      hh = J.$div$n(t1.get$height(img), 4);
+      hw = J.$div$n(t1.get$width(img), 2);
+      hh = J.$div$n(t1.get$height(img), 2);
       t2 = this.ctx_0;
       t3 = t1.get$width(img);
       t4 = t1.get$height(img);
@@ -9894,7 +10307,7 @@ var $$ = Object.create(null);
       t7 = t5.get$canvas(t2).height;
       if (typeof t7 !== "number")
         return t7.$div();
-      t5.drawImageScaledFromSource$9(t2, img, 0, 0, t3, t4, t6 / 2 - hw, t7 / 2 - hh, J.$div$n(t1.get$width(img), 2), J.$div$n(t1.get$height(img), 2));
+      t5.drawImageScaledFromSource$9(t2, img, 0, 0, t3, t4, t6 / 2 - hw, t7 / 2 - hh, t1.get$width(img), t1.get$height(img));
     }
   }
 }],
@@ -10380,6 +10793,7 @@ C.Window_methods = W.Window.prototype;
 C.C_DynamicRuntimeType = new H.DynamicRuntimeType();
 C.C_OutOfMemoryError = new P.OutOfMemoryError();
 C.C__DelayedDone = new P._DelayedDone();
+C.C__JSRandom = new P._JSRandom();
 C.C__RootZone = new P._RootZone();
 C.Duration_0 = new P.Duration(0);
 C.JS_CONST_0 = function(hooks) {
@@ -10661,7 +11075,7 @@ Isolate.$lazy($, "shg_table", "shg_table", "get$shg_table", function() {
   return [9, 11, 12, 13, 13, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24];
 });
 Isolate.$lazy($, "images", "images", "get$images", function() {
-  return P.LinkedHashMap_LinkedHashMap$_literal(["bastacorp", S.loadImage("img/bastacorp.jpg"), "menu", S.loadImage("img/menu.png"), "menu_hubble", S.loadImage("img/menu_hubble.png"), "tiles", S.loadImage("img/tiles.png"), "photo1", S.loadImage("img/photo1.jpg"), "photo2", S.loadImage("img/photo2.jpg"), "photo3", S.loadImage("img/photo3.jpg"), "player", S.loadImage("img/player.png"), "space", S.loadImage("img/space.jpg"), "trinkets", S.loadImage("img/trinkets.png")], null, null);
+  return P.LinkedHashMap_LinkedHashMap$_literal(["bastacorp", S.loadImage("img/bastacorp.jpg"), "menu", S.loadImage("img/menu.png"), "menu_hubble", S.loadImage("img/menu_hubble.png"), "tiles", S.loadImage("img/tiles.png"), "photo1", S.loadImage("img/photo1.jpg"), "photo2", S.loadImage("img/photo2.jpg"), "photo3", S.loadImage("img/photo3.jpg"), "photo4", S.loadImage("img/photo4.jpg"), "player", S.loadImage("img/player.png"), "space", S.loadImage("img/space.jpg"), "trinkets", S.loadImage("img/trinkets.png"), "upsGuy", S.loadImage("img/upsGuy.png")], null, null);
 });
 Isolate.$lazy($, "all", "all", "get$all", function() {
   var t1 = $.get$images();
@@ -10676,8 +11090,8 @@ Isolate.$lazy($, "down", "down", "get$down", function() {
 Isolate.$lazy($, "CHAR_CODES", "CHAR_CODES", "get$CHAR_CODES", function() {
   return P.LinkedHashMap_LinkedHashMap$_literal([48, "0", 49, "1", 50, "2", 51, "3", 52, "4", 53, "5", 54, "6", 55, "7", 56, "8", 57, "9", 65, "a", 66, "b", 67, "c", 68, "d", 69, "e", 70, "f", 71, "g", 72, "h", 73, "i", 74, "j", 75, "k", 76, "l", 77, "m", 78, "n", 79, "o", 80, "p", 81, "q", 82, "r", 83, "s", 84, "t", 85, "u", 86, "v", 87, "w", 88, "x", 89, "y", 90, "z", 96, "0", 97, "1", 98, "2", 99, "3", 100, "4", 101, "5", 102, "6", 103, "7", 104, "8", 105, "9", 106, "*", 107, "+", 109, "-", 110, ".", 111, "/", 186, ";", 187, "=", 188, ",", 189, "-", 190, ".", 191, "/", 192, "`", 219, "[", 220, "\\", 221, "]", 222, "'"], null, null);
 });
-Isolate.$lazy($, "LEVELS", "LEVELS", "get$LEVELS", function() {
-  return [P.LinkedHashMap_LinkedHashMap$_literal(["height", 8, "width", 8, "content", "AgIAAAAAAwAAAAAAAAAAAQADDQQOAAAAAAAAAAQAAAABAAAAAAAEAAMAAAAAAgQAAAAAAAMAAAAAAgECAAAAAA==", "entities", [], "message", "Use the arrow keys to collect a new lens", "photo", "photo1"], null, null), P.LinkedHashMap_LinkedHashMap$_literal(["height", 8, "width", 8, "content", "AgUAAAIAAA4AAAAAAAUAAAAAAAEAAAAAAAAAAAAAAAQABAAAAAAAAAAAAAADAAAAAAEEAAAAAAANAgAAAAAAAA==", "entities", [], "message", "Collect a new navigation computer.", "photo", "photo2", "password", "neb"], null, null), P.LinkedHashMap_LinkedHashMap$_literal(["height", 12, "width", 12, "content", "AAAAAAAAAAAAAAAAAAAAAAACAAAAAAACAAACAAAAAAADAAAAAAAAAQAAAAAOAAAAAAAAAAAAAAAAAAEAAAQAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAEBQAADQAAAAAAAAAAAAEAAAUAAAAAAAAAAAAAAAAAAAAAAQAAAAACAAAAAAAAAAAA", "entities", [], "message", "Take your son to soccer practice", "photo", "photo3", "password", "tel"], null, null)];
+Isolate.$lazy($, "SLIDING_LEVELS", "SLIDING_LEVELS", "get$SLIDING_LEVELS", function() {
+  return [P.LinkedHashMap_LinkedHashMap$_literal(["height", 8, "width", 8, "content", "AgIAAAAAAwAAAAAAAAAAAQADDQQOAAAAAAAAAAQAAAABAAAAAAAEAAMAAAAAAgQAAAAAAAMAAAAAAgECAAAAAA==", "entities", [], "message", "Use the arrow keys to collect a new lens", "photo", "photo1"], null, null), P.LinkedHashMap_LinkedHashMap$_literal(["height", 8, "width", 8, "content", "AgUAAAIAAA4AAAAAAAUAAAAAAAEAAAAAAAAAAAAAAAQABAAAAAAAAAAAAAADAAAAAAEEAAAAAAANAgAAAAAAAA==", "entities", [], "message", "Collect a new navigation computer.", "photo", "photo2", "password", "neb"], null, null), P.LinkedHashMap_LinkedHashMap$_literal(["height", 12, "width", 12, "content", "AAAAAAAAAAAAAAAAAAAAAAACAAAAAAACAAACAAAAAAADAAAAAAAAAQAAAAAOAAAAAAAAAAAAAAAAAAEAAAQAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAEBQAADQAAAAAAAAAAAAEAAAUAAAAAAAAAAAAAAAAAAAAAAQAAAAACAAAAAAAAAAAA", "entities", [], "message", "Take your son to soccer practice", "photo", "photo3", "password", "tel"], null, null), P.LinkedHashMap_LinkedHashMap$_literal(["height", 8, "width", 8, "content", "AAAAAAAFAAAAAA0AAA4AAAAAAAMAAAAAAwAAAAAAAAMAAAAAAQADAAAAAAABAAAAAgACAgAAAAAAAAAAAAIAAA==", "entities", [], "message", "Sign for a package with the UPS guy.", "photo", "photo4", "password", "gal"], null, null)];
 });
 Isolate.$lazy($, "levels", "levels", "get$levels", function() {
   return [];
@@ -10685,11 +11099,20 @@ Isolate.$lazy($, "levels", "levels", "get$levels", function() {
 Isolate.$lazy($, "passMap", "passMap", "get$passMap", function() {
   return P.LinkedHashMap_LinkedHashMap$_empty(null, null);
 });
+Isolate.$lazy($, "INSULTING_MOVES", "INSULTING_MOVES", "get$INSULTING_MOVES", function() {
+  return ["SAME-DAY SHIPPING", "HANDCART", "LARGE PACKAGE"];
+});
+Isolate.$lazy($, "MOVES", "MOVES", "get$MOVES", function() {
+  return ["SHOUT", "PUNCH", "CRY", "POUT"];
+});
+Isolate.$lazy($, "rng", "rng", "get$rng", function() {
+  return C.C__JSRandom;
+});
 Isolate.$lazy($, "events", "events", "get$events", function() {
   return F.EventTarget$();
 });
 Isolate.$lazy($, "waves", "waves", "get$waves", function() {
-  return P.LinkedHashMap_LinkedHashMap$_literal(["bastacorp", ["saw", 0, 0.193, 0, 0.268, 0, 0.004, 110, 878, 2400, -0.9, 0, 0, 0.01, 0.0003, 0, 0, 0, 0.5, -0.296, 0, 0, 0, 1, 0, 0, 0, 0], "select", ["square", 2, 0.193, 0, 0.002, 0.576, 0.276, 20, 850, 2400, 0, 0, 0, 0.01, 0.0003, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], "collect", ["square", 0, 0.052, 0, 0.032, 0.492, 0.36, 20, 1320, 2400, 0, 0, 0, 0.01, 0.0003, 0, 0.262, 0.105, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], "keypress", ["noise", 0, 0.054, 0, 0.014, 0.756, 0.046, 20, 1691, 2400, -0.268, 0, 0, 0.01, 0.0003, 0, 0, 0, 0, 0, 0, -0.132, -0.186, 1, 0, 0, 0, 0], "bad_choice", ["saw", 0, 0.176, 0, 0.046, 0.36, 0.52, 20, 943, 2400, -0.318, 0, 0, 0.01, 0.0003, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.201, 0], "invalid_choice", ["synth", 0, 0.176, 0, 0, 0, 0.086, 1622, 1033, 662, -0.612, 0.692, 0.509, 41.9533, 0.1667, 0.438, -0.17, 0.125, 0.0195, 0.658, 0.5488, 0.276, 0.828, 0.971, -0.034, 0.814, 0.972, -0.534], "menu_down", ["square", 0, 0.176, 0, 0.024, 0.081, 0.066, 20, 767, 2400, 0, 0, 0, 0.01, 0.0003, 0, 0.576, 0.145, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], "menu_up", ["square", 0, 0.176, 0, 0.024, 0.081, 0.066, 20, 767, 2400, 0.228, 0.168, 0, 0.01, 0.0003, 0, 0.576, 0.145, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], "backspace", ["square", 0, 0.176, 0, 0.016, 0, 0.016, 162, 309, 2400, -0.896, 0, 0, 0.01, 0.0003, 0, 0, 0, 0.5, -0.586, 0, 0, 0, 1, 0, 0, 0, 0], "move", ["sine", 0, 0.176, 0, 0.012, 0, 0.222, 20, 174, 2400, 0.414, 0, 0, 0.01, 0.0003, 0, 0, 0, 0.5, -0.696, 0, 0, 0, 1, 0, 0, 0, 0], "bump", ["square", 0, 0.097, 0, 0.016, 0, 0.066, 20, 358, 2400, -0.606, 0, 0, 0.01, 0.0003, 0, 0, 0, 0.5, 0, 0, 0, 0, 1, 0, 0, 0.159, 0], "tick", ["sine", 0, 0.052, 0, 0, 0, 0.054, 20, 140, 613, -1, -1, 0, 0.01, 0.0003, 0, 0.714, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]], null, null);
+  return P.LinkedHashMap_LinkedHashMap$_literal(["bastacorp", ["saw", 0, 0.193, 0, 0.268, 0, 0.004, 110, 878, 2400, -0.9, 0, 0, 0.01, 0.0003, 0, 0, 0, 0.5, -0.296, 0, 0, 0, 1, 0, 0, 0, 0], "select", ["square", 2, 0.193, 0, 0.002, 0.576, 0.276, 20, 850, 2400, 0, 0, 0, 0.01, 0.0003, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], "collect", ["square", 0, 0.052, 0, 0.032, 0.492, 0.36, 20, 1320, 2400, 0, 0, 0, 0.01, 0.0003, 0, 0.262, 0.105, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], "keypress", ["noise", 0, 0.054, 0, 0.014, 0.756, 0.046, 20, 1691, 2400, -0.268, 0, 0, 0.01, 0.0003, 0, 0, 0, 0, 0, 0, -0.132, -0.186, 1, 0, 0, 0, 0], "bad_choice", ["saw", 0, 0.176, 0, 0.046, 0.36, 0.52, 20, 943, 2400, -0.318, 0, 0, 0.01, 0.0003, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.201, 0], "invalid_choice", ["synth", 0, 0.176, 0, 0, 0, 0.086, 1622, 1033, 662, -0.612, 0.692, 0.509, 41.9533, 0.1667, 0.438, -0.17, 0.125, 0.0195, 0.658, 0.5488, 0.276, 0.828, 0.971, -0.034, 0.814, 0.972, -0.534], "menu_down", ["square", 0, 0.176, 0, 0.024, 0.081, 0.066, 20, 767, 2400, 0, 0, 0, 0.01, 0.0003, 0, 0.576, 0.145, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], "menu_up", ["square", 0, 0.176, 0, 0.024, 0.081, 0.066, 20, 767, 2400, 0.228, 0.168, 0, 0.01, 0.0003, 0, 0.576, 0.145, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], "backspace", ["square", 0, 0.176, 0, 0.016, 0, 0.016, 162, 309, 2400, -0.896, 0, 0, 0.01, 0.0003, 0, 0, 0, 0.5, -0.586, 0, 0, 0, 1, 0, 0, 0, 0], "move", ["sine", 0, 0.176, 0, 0.012, 0, 0.222, 20, 174, 2400, 0.414, 0, 0, 0.01, 0.0003, 0, 0, 0, 0.5, -0.696, 0, 0, 0, 1, 0, 0, 0, 0], "bump", ["square", 0, 0.097, 0, 0.016, 0, 0.066, 20, 358, 2400, -0.606, 0, 0, 0.01, 0.0003, 0, 0, 0, 0.5, 0, 0, 0, 0, 1, 0, 0, 0.159, 0], "tick", ["sine", 0, 0.052, 0, 0, 0, 0.054, 20, 140, 613, -1, -1, 0, 0.01, 0.0003, 0, 0.714, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], "rage", ["noise", 0, 0.061, 0, 0.386, 0.492, 0.082, 20, 716, 2400, 0, 0, 0, 0.01, 0.0003, 0, 0, 0, 0, 0, 0.7536, -0.02, -0.186, 1, 0, 0, 0, 0], "hubble_wife", ["saw", 0, 0.061, 0, 0.388, 0, 0.194, 20, 581, 2400, 0.43, 0, 0, 0.01, 0.0003, 0, 0, 0, 0, 0, 0.4768, 0, 0, 1, 0, 0, 0, 0]], null, null);
 });
 Isolate.$lazy($, "samples", "samples", "get$samples", function() {
   return P.LinkedHashMap_LinkedHashMap$_empty(null, null);

@@ -1,5 +1,6 @@
-library levels.photo;
+library levels.manbattle;
 
+import 'dart:html';
 import 'dart:math';
 
 import 'drawutils.dart' as drawutils;
@@ -80,10 +81,13 @@ class LevelManbattle extends Level {
         ctx.fillStyle = '#eee';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        var openingDrift = this.stage == 0 ? this.countdown : 0;
+        var openingDriftPlayer = 0;
+        var openingDriftOpponent = 0;
+        if (this.stage == 0) openingDriftPlayer = openingDriftOpponent = this.countdown;
+        else if (this.stage == 7) openingDriftOpponent = this.countdown - 2000;
 
-        var playerLeft = 0.1 * squareSize + (openingDrift / 1500 * MOVEMENT_INCREMENT).roundToDouble() / MOVEMENT_INCREMENT * squareSize;
-        var opponentLeft = 0.7 * squareSize - (openingDrift / 1500 * MOVEMENT_INCREMENT).roundToDouble() / MOVEMENT_INCREMENT * squareSize;
+        var playerLeft = 0.1 * squareSize + (openingDriftPlayer / 1500 * MOVEMENT_INCREMENT).roundToDouble() / MOVEMENT_INCREMENT * squareSize;
+        var opponentLeft = 0.7 * squareSize - (openingDriftOpponent / 1500 * MOVEMENT_INCREMENT).roundToDouble() / MOVEMENT_INCREMENT * squareSize;
 
         this.upsGuy.draw((img) {
             ctx.drawImageScaledFromSource(
@@ -290,6 +294,11 @@ class LevelManbattle extends Level {
                     this.setStage(4);
                     return;
                 }
+            case 6:
+                if (e.keyCode == 13) {
+                    this.setStage(1);
+                    return;
+                }
         }
         if (this.stage != 4) return;
 
@@ -364,6 +373,10 @@ class LevelManbattle extends Level {
                 }
                 break;
             case 7:
+                if (this.tickCountDown(delta)) {
+                    // sound.play('rage');
+                    this.ctx.nextLevel();
+                }
                 break;
         }
 

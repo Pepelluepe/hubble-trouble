@@ -33,29 +33,31 @@ void init() {
 
     var ctx = new Context(passwordTest, next, goTo);
 
-    // addLevel(null, new LevelTitle(ctx, 750, soundName: 'bastacorp'));
-    // addLevel(null, new LevelMenu(ctx));
+    addLevel(null, new LevelTitle(ctx, 750, soundName: 'bastacorp'));
+    addLevel(null, new LevelMenu(ctx));
 
-    // var i = 0;
-    // SLIDING_LEVELS.forEach((level) {
-    //     var password = level.containsKey('password') ? level['password'] : null;
+    var i = 0;
+    SLIDING_LEVELS.forEach((level) {
+        var password = level.containsKey('password') ? level['password'] : null;
 
-    //     if (level.containsKey('message')) {
-    //         addLevel(password, new LevelMessage(ctx, 2000, level['message']));
-    //         password = null;
-    //     }
+        if (level.containsKey('message')) {
+            addLevel(password, new LevelMessage(ctx, 2000, level['message']));
+            password = null;
+        }
 
-    //     addLevel(password, new LevelSlidePuzzle(ctx, i % 4, level['width'], level['height'], level['content']));
-    //     addLevel(null, new LevelMessage(ctx, 2000, 'Photo Op!'));
-    //     addLevel(null, new LevelPhoto(ctx, level['photo']));
-    //     if (i + 1 != SLIDING_LEVELS.length && SLIDING_LEVELS[i + 1].containsKey('password')) {
-    //         addLevel(null, new LevelMessage(ctx, 2000, 'PASSWORD: ' + SLIDING_LEVELS[i + 1]['password']));
-    //     }
-    //     i += 1;
-    // });
+        addLevel(password, new LevelSlidePuzzle(ctx, i % 4, level['width'], level['height'], level['content']));
+        addLevel(null, new LevelMessage(ctx, 2000, 'Photo Op!'));
+        addLevel(null, new LevelPhoto(ctx, level['photo']));
+        if (i + 1 != SLIDING_LEVELS.length && SLIDING_LEVELS[i + 1].containsKey('password')) {
+            addLevel(null, new LevelMessage(ctx, 2000, 'PASSWORD: ' + SLIDING_LEVELS[i + 1]['password']));
+        }
+        i += 1;
+    });
 
     addLevel(null, new LevelMessage(ctx, 2500, 'Hubble Wife is in bed with another man!'));
-    addLevel(null, new LevelManbattle(ctx));
+    addLevel('xh1', new LevelManbattle(ctx));
+    addLevel(null, new LevelMessage(ctx, 2500, 'PASSWORD: ups'));
+    addLevel('ups', new LevelMessage(ctx, 2500, 'You need some fresh air'));
 
 
 
