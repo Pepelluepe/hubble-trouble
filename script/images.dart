@@ -28,7 +28,7 @@ Map images = {
     'player': loadImage('img/player.png'),
     'space': loadImage('img/space.jpg'),
     'trinkets': loadImage('img/trinkets.png'),
-    'upsGuy': loadImage('img/upsGuy.png'),
+    'upsGuy': loadImage('img/upsguy.png'),
 };
 
 Future<List> waitFor(Iterable<String> names) {
