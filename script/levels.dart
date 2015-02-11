@@ -2,12 +2,13 @@ library levels;
 
 import 'audio.dart' as audio;
 import 'level.generic.dart';
-import 'level.message.dart';
+import 'level.manbattle.dart';
 import 'level.menu.dart';
+import 'level.message.dart';
 import 'level.photo.dart';
 import 'level.slidePuzzle.dart';
 import 'level.title.dart';
-import 'leveldata.dart';
+import 'slidingleveldata.dart';
 
 
 List<Level> levels = [];
@@ -32,30 +33,32 @@ void init() {
 
     var ctx = new Context(passwordTest, next, goTo);
 
-    addLevel(null, new LevelTitle(ctx, 750, soundName: 'bastacorp'));
-    addLevel(null, new LevelMenu(ctx));
+    // addLevel(null, new LevelTitle(ctx, 750, soundName: 'bastacorp'));
+    // addLevel(null, new LevelMenu(ctx));
 
-    var i = 0;
-    LEVELS.forEach((level) {
-        var password = level.containsKey('password') ? level['password'] : null;
+    // var i = 0;
+    // SLIDING_LEVELS.forEach((level) {
+    //     var password = level.containsKey('password') ? level['password'] : null;
 
-        if (level.containsKey('message')) {
-            addLevel(password, new LevelMessage(ctx, 2000, level['message']));
-            password = null;
-        }
+    //     if (level.containsKey('message')) {
+    //         addLevel(password, new LevelMessage(ctx, 2000, level['message']));
+    //         password = null;
+    //     }
 
-        addLevel(password, new LevelSlidePuzzle(ctx, i % 4, level['width'], level['height'], level['content']));
-        addLevel(null, new LevelMessage(ctx, 2000, 'Photo Op!'));
-        addLevel(null, new LevelPhoto(ctx, level['photo']));
-        if (i + 1 != LEVELS.length && LEVELS[i + 1].containsKey('password')) {
-            addLevel(null, new LevelMessage(ctx, 2000, 'PASSWORD: ' + LEVELS[i + 1]['password']));
-        }
-        i += 1;
-    });
+    //     addLevel(password, new LevelSlidePuzzle(ctx, i % 4, level['width'], level['height'], level['content']));
+    //     addLevel(null, new LevelMessage(ctx, 2000, 'Photo Op!'));
+    //     addLevel(null, new LevelPhoto(ctx, level['photo']));
+    //     if (i + 1 != SLIDING_LEVELS.length && SLIDING_LEVELS[i + 1].containsKey('password')) {
+    //         addLevel(null, new LevelMessage(ctx, 2000, 'PASSWORD: ' + SLIDING_LEVELS[i + 1]['password']));
+    //     }
+    //     i += 1;
+    // });
 
-    // levels.add(new LevelDisability());
+    addLevel(null, new LevelMessage(ctx, 2500, 'Hubble Wife is in bed with another man!'));
+    addLevel(null, new LevelManbattle(ctx));
 
-    // DISABILITY_LEVEL = levels.length - 1;
+
+
 
     levels[0].reset();
 }
