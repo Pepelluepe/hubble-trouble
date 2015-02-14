@@ -2,8 +2,6 @@
 
 var fs = require('fs');
 
-var data = [];
-
 
 function getLevelData(levelData) {
     var minLevelData = new ArrayBuffer(levelData.length);
@@ -29,6 +27,8 @@ function getEntityData(objectLayer) {
 fs.readdir('levels/sliding/', function(err, list) {
     if (err) process.exit(1);
 
+    var data = [];
+
     list.sort().forEach(function(file) {
         var file = 'levels/sliding/' + file;
 
@@ -52,4 +52,34 @@ fs.readdir('levels/sliding/', function(err, list) {
 
     var template = fs.readFileSync('levels/template.sliding.dart.txt').toString();
     fs.writeFileSync('script/slidingleveldata.dart', template.replace('%s', JSON.stringify(data)));
+});
+
+
+fs.readdir('levels/threedee/', function(err, list) {
+    if (err) process.exit(1);
+
+    var data = [];
+
+    list.sort().forEach(function(file) {
+        var file = 'levels/threedee/' + file;
+
+        var contents = fs.readFileSync(file);
+        var parsed = JSON.parse(contents);
+
+        var height = parsed.height;
+        var width = parsed.width;
+
+        data.push({
+            height: height,
+            width: width,
+            content: getLevelData(parsed.layers[0].data),
+            startX: parsed.properties && parsed.properties.x | 0,
+            startY: parsed.properties && parsed.properties.y | 0,
+            password: parsed.properties && parsed.properties.password,
+        });
+
+    });
+
+    var template = fs.readFileSync('levels/template.threedee.dart.txt').toString();
+    fs.writeFileSync('script/threedeeleveldata.dart', template.replace('%s', JSON.stringify(data)));
 });

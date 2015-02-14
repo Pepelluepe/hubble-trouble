@@ -1,6 +1,7 @@
 library levels;
 
 import 'audio.dart' as audio;
+import 'level.fps.dart';
 import 'level.generic.dart';
 import 'level.manbattle.dart';
 import 'level.menu.dart';
@@ -9,6 +10,7 @@ import 'level.photo.dart';
 import 'level.slidePuzzle.dart';
 import 'level.title.dart';
 import 'slidingleveldata.dart';
+import 'threedeeleveldata.dart';
 
 
 List<Level> levels = [];
@@ -59,7 +61,10 @@ void init() {
     addLevel(null, new LevelMessage(ctx, 2500, 'PASSWORD: ups'));
     addLevel('ups', new LevelMessage(ctx, 2500, 'You need some fresh air'));
 
-
+    THREE_DEE_LEVELS.forEach((level) {
+        var password = level.containsKey('password') ? level['password'] : null;
+        addLevel(password, new LevelFPS(ctx, level['content'], level['width'], level['height'], level['startX'], level['startY']));
+    });
 
 
     levels[0].reset();
