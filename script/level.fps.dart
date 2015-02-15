@@ -2,7 +2,9 @@ library levels.fps;
 
 import 'dart:html';
 import 'dart:math';
+import 'dart:typed_data';
 
+import 'base64.dart' as base64;
 import 'images.dart' as images;
 import 'keys.dart' as keys;
 import 'level.generic.dart';
@@ -13,6 +15,8 @@ const FPS_PLAYER_SPEED = 1.0;
 const PIXEL_WIDTH = 5;
 const SAMPLES = 75;
 const TEXTURE_SIZE = 16;
+
+const PLAYER_HEIGHT = 0.5;
 
 
 /**
@@ -69,7 +73,14 @@ class LevelFPS extends Level {
     LevelFPS(Context ctx, Object data, int width, int height, double x, double y) {
         this.ctx = ctx;
 
-        this.data = data;
+        this.data = new Uint16List(width * height);
+        if (data != null) {
+            var convertedData = base64.base64DecToArr(data);
+            for (var i = 0; i < this.data.length; i++) {
+                this.data[i] = convertedData[i];
+            }
+        }
+
         this.width = width;
         this.height = height;
         this.x = this.startX = x;
@@ -213,12 +224,12 @@ class LevelFPS extends Level {
             var d2 = this.distances[i];
             var d = d2 * cos(theta - this.rotation);
 
-            var z = 1 - this.z / 2;
+            var z = 1 - this.z / 2 - PLAYER_HEIGHT;
 
             this.textures.draw((img) {
                 var face = this.faces[i];
                 var h = 300 / d;
-                ctx.drawImage(
+                ctx.drawImageScaledFromSource(
                     img,
                     this.bits[i] * (TEXTURE_SIZE - 1) + (face % 4) * TEXTURE_SIZE,
                     (face / 4).floor() * TEXTURE_SIZE,
@@ -236,16 +247,16 @@ class LevelFPS extends Level {
 
     void tick(int delta) {
         if (this.pressingLR == 1) {
-            this.rotation += delta * 0.005;
-        } else if (this.pressingLR == 2) {
             this.rotation -= delta * 0.005;
+        } else if (this.pressingLR == 2) {
+            this.rotation += delta * 0.005;
         }
 
         var dX = 0.0;
         var dY = 0.0;
         if (this.pressingUD != 0) {
-            dX = FPS_PLAYER_SPEED * cos(this.rotation) * delta * 0.001;
-            dY = FPS_PLAYER_SPEED * sin(this.rotation) * delta * 0.001;
+            dX = FPS_PLAYER_SPEED * sin(this.rotation / 360 * 2 * PI) * delta * 0.001;
+            dY = FPS_PLAYER_SPEED * cos(this.rotation / 360 * 2 * PI) * delta * 0.001;
         }
 
         if (this.pressingUD == 1) {
