@@ -11,9 +11,9 @@ import 'level.generic.dart';
 import 'sound.dart' as sound;
 
 
-const FPS_PLAYER_SPEED = 1.0;
+const FPS_PLAYER_SPEED = 3.0;
 const PIXEL_WIDTH = 5;
-const SAMPLES = 75;
+const SAMPLES = 150;
 const TEXTURE_SIZE = 16;
 
 const PLAYER_HEIGHT = 0.5;
@@ -181,7 +181,7 @@ class LevelFPS extends Level {
                     dval = this.data[this.getLevelIndex(mapX, mapY)];
                     if (dval != 0) {
                         this.distances[i] = distX;
-                        this.faces[i] = dval;
+                        this.faces[i] = dval - 1;
                         this.bits[i] = (y + distX / deltaY * stepY) % 1;
                         break;
                     }
@@ -191,7 +191,7 @@ class LevelFPS extends Level {
                     dval = this.data[this.getLevelIndex(mapX, mapY)];
                     if (dval != 0) {
                         this.distances[i] = distY;
-                        this.faces[i] = dval;
+                        this.faces[i] = dval - 1;
                         this.bits[i] = (x + distY / deltaX * stepX) % 1;
                         break;
                     }
@@ -217,6 +217,14 @@ class LevelFPS extends Level {
         var theta = this.rotation - PI / 6;
         this.calcWallDistance(theta);
 
+        var canvas = ctx.canvas;
+
+        var squareSize = min(canvas.width, canvas.height);
+        var squareX = canvas.width / 2 - squareSize / 2;
+        var squareY = canvas.height / 2 - squareSize / 2;
+
+        var pixelSize = squareSize / SAMPLES;
+
         var c;
         for (var i = 0; i < SAMPLES; i++) {
             theta += PI / 3 / SAMPLES;
@@ -228,16 +236,16 @@ class LevelFPS extends Level {
 
             this.textures.draw((img) {
                 var face = this.faces[i];
-                var h = 300 / d;
+                var h = squareSize / d;
                 ctx.drawImageScaledFromSource(
                     img,
                     this.bits[i] * (TEXTURE_SIZE - 1) + (face % 4) * TEXTURE_SIZE,
                     (face / 4).floor() * TEXTURE_SIZE,
                     1,
                     TEXTURE_SIZE,
-                    i * PIXEL_WIDTH,
-                    150 - h * z,
-                    PIXEL_WIDTH,
+                    squareX + i * pixelSize,
+                    squareY + 150 - h * z,
+                    pixelSize,
                     h
                 );
             });
@@ -255,16 +263,16 @@ class LevelFPS extends Level {
         var dX = 0.0;
         var dY = 0.0;
         if (this.pressingUD != 0) {
-            dX = FPS_PLAYER_SPEED * sin(this.rotation / 360 * 2 * PI) * delta * 0.001;
-            dY = FPS_PLAYER_SPEED * cos(this.rotation / 360 * 2 * PI) * delta * 0.001;
+            dY = FPS_PLAYER_SPEED * sin(this.rotation) * delta * 0.001;
+            dX = FPS_PLAYER_SPEED * cos(this.rotation) * delta * 0.001;
         }
 
         if (this.pressingUD == 1) {
             this.x += dX;
-            this.y += dX;
+            this.y += dY;
         } else if (this.pressingUD == 2) {
             this.x -= dX;
-            this.y -= dX;
+            this.y -= dY;
         }
     }
 
