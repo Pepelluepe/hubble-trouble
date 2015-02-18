@@ -12,11 +12,13 @@ import 'sound.dart' as sound;
 
 
 const FPS_PLAYER_SPEED = 3.0;
+const FPS_PLAYER_ROT_SPEED = 0.002;
 const PIXEL_WIDTH = 5;
 const SAMPLES = 150;
-const TEXTURE_SIZE = 16;
+const TEXTURE_SIZE = 64;
 
 const PLAYER_HEIGHT = 0.5;
+const WALL_SPACING = 0.2;
 
 
 /**
@@ -210,6 +212,19 @@ class LevelFPS extends Level {
         return y * this.width + x;
     }
 
+    bool hitsAWall(double x, double y) {
+        print(x);
+        print(y);
+        return hitTest((x + 0.1).floor(), (y + 0.1).floor()) ||
+               hitTest((x - 0.1).floor(), (y + 0.1).floor()) ||
+               hitTest((x + 0.1).floor(), (y - 0.1).floor()) ||
+               hitTest((x - 0.1).floor(), (y - 0.1).floor());
+    }
+
+    bool hitTest(int x, int y) {
+        return this.data[this.getLevelIndex(x, y)] != 0;
+    }
+
     void draw(CanvasRenderingContext2D ctx, Function drawUI) {
         ctx.fillStyle = '#111';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -241,11 +256,11 @@ class LevelFPS extends Level {
                     img,
                     this.bits[i] * (TEXTURE_SIZE - 1) + (face % 4) * TEXTURE_SIZE,
                     (face / 4).floor() * TEXTURE_SIZE,
-                    1,
+                    3,
                     TEXTURE_SIZE,
                     squareX + i * pixelSize,
                     squareY + 150 - h * z,
-                    pixelSize,
+                    pixelSize * 3,
                     h
                 );
             });
@@ -254,25 +269,25 @@ class LevelFPS extends Level {
     }
 
     void tick(int delta) {
-        if (this.pressingLR == 1) {
-            this.rotation -= delta * 0.005;
-        } else if (this.pressingLR == 2) {
-            this.rotation += delta * 0.005;
+        if (pressingLR == 1) {
+            rotation -= delta * FPS_PLAYER_ROT_SPEED;
+        } else if (pressingLR == 2) {
+            rotation += delta * FPS_PLAYER_ROT_SPEED;
         }
 
         var dX = 0.0;
         var dY = 0.0;
-        if (this.pressingUD != 0) {
-            dY = FPS_PLAYER_SPEED * sin(this.rotation) * delta * 0.001;
-            dX = FPS_PLAYER_SPEED * cos(this.rotation) * delta * 0.001;
+        if (pressingUD != 0) {
+            dY = FPS_PLAYER_SPEED * sin(rotation) * delta * 0.001;
+            dX = FPS_PLAYER_SPEED * cos(rotation) * delta * 0.001;
         }
 
-        if (this.pressingUD == 1) {
-            this.x += dX;
-            this.y += dY;
-        } else if (this.pressingUD == 2) {
-            this.x -= dX;
-            this.y -= dY;
+        if (pressingUD == 1) {
+            if (!hitsAWall(x + dX, y)) x += dX;
+            if (!hitsAWall(x, y + dY)) y += dY;
+        } else if (pressingUD == 2) {
+            if (!hitsAWall(x + dX, y)) x -= dX;
+            if (!hitsAWall(x, y + dY)) y -= dY;
         }
     }
 
